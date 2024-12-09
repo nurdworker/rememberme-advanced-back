@@ -1,0 +1,225 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  backend
+Transform:
+  - AWS::Serverless-2016-10-31
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 10 # 타임아웃 시간을 10초로 설정
+    Environment:
+      Variables:
+        ENV: !Ref ENV
+        MONGODB_USER: !Ref MONGODB_USER
+        MONGODB_PASSWORD: !Ref MONGODB_PASSWORD
+        MONGODB_HOST: !Ref MONGODB_HOST
+        MONGODB_PORT: !Ref MONGODB_PORT
+        MONGODB_DB: !Ref MONGODB_DB
+        OAUTH_CLIENT_ID: !Ref OAUTH_CLIENT_ID
+        OAUTH_CLIENT_SECRET: !Ref OAUTH_CLIENT_SECRET
+        OAUTH_REDIRECT_URI: !Ref OAUTH_REDIRECT_URI
+
+  HttpApi:
+    CorsConfiguration:
+      AllowHeaders:
+        - "*"
+      AllowMethods:
+        - GET
+        - POST
+      AllowOrigins:
+        - "*"
+
+Resources:
+  TestFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/test.handler
+      Runtime: nodejs20.x
+      Timeout: 10 # 타임아웃 시간을 10초로 설정
+      Events:
+        TestEvent:
+          Type: HttpApi
+          Properties:
+            Path: /test
+            Method: get
+            Cors:
+              AllowOrigins: "'*'"
+              AllowMethods: "'GET,OPTIONS'"
+              AllowHeaders: "'Content-Type'"
+  UserGet:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/getUser.handler
+      Runtime: nodejs20.x
+      Timeout: 10 # 타임아웃 시간을 10초로 설정
+      Events:
+        UserGet:
+          Type: HttpApi
+          Properties:
+            Path: /user
+            Method: get
+            Cors:
+              AllowOrigins: "'*'"
+              AllowMethods: "'GET,OPTIONS'"
+              AllowHeaders: "'*'"
+  ListsGet:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/getLists.handler
+      Runtime: nodejs20.x
+      Timeout: 10 # 타임아웃 시간을 10초로 설정
+      Events:
+        ListsGet:
+          Type: HttpApi
+          Properties:
+            Path: /lists
+            Method: get
+            Cors:
+              AllowOrigins: "'*'"
+              AllowMethods: "'GET,OPTIONS'"
+              AllowHeaders: "'Content-Type'"
+  ListsPost:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/postLists.handler
+      Runtime: nodejs20.x
+      Timeout: 10 # 타임아웃 시간을 10초로 설정
+      Events:
+        ListsPost:
+          Type: HttpApi
+          Properties:
+            Path: /lists
+            Method: post
+            Cors:
+              AllowOrigins: "'*'"
+              AllowMethods: "'POST,OPTIONS'"
+              AllowHeaders: "'Content-Type'"
+  ListPost:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/postList.handler
+      Runtime: nodejs20.x
+      Timeout: 10 # 타임아웃 시간을 10초로 설정
+      Events:
+        ListPost:
+          Type: HttpApi
+          Properties:
+            Path: /list
+            Method: post
+            Cors:
+              AllowOrigins: "'*'"
+              AllowMethods: "'POST,OPTIONS'"
+              AllowHeaders: "'Content-Type'"
+  WordsPost:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/postWords.handler
+      Runtime: nodejs20.x
+      Timeout: 10 # 타임아웃 시간을 10초로 설정
+      Events:
+        WordsPost:
+          Type: HttpApi
+          Properties:
+            Path: /words
+            Method: post
+            Cors:
+              AllowOrigins: "'*'"
+              AllowMethods: "'POST,OPTIONS'"
+              AllowHeaders: "'Content-Type'"
+
+  WordPost:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/postWord.handler
+      Runtime: nodejs20.x
+      Timeout: 10 # 타임아웃 시간을 10초로 설정
+      Events:
+        WordPost:
+          Type: HttpApi
+          Properties:
+            Path: /word
+            Method: post
+            Cors:
+              AllowOrigins: "'*'"
+              AllowMethods: "'POST,OPTIONS'"
+              AllowHeaders: "'Content-Type'"
+  IncorrectListPost:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/postIncorrectList.handler
+      Runtime: nodejs20.x
+      Timeout: 10 # 타임아웃 시간을 10초로 설정
+      Events:
+        IncorrectListPost:
+          Type: HttpApi
+          Properties:
+            Path: /incorrectlist
+            Method: post
+            Cors:
+              AllowOrigins: "'*'"
+              AllowMethods: "'POST,OPTIONS'"
+              AllowHeaders: "'Content-Type'"
+
+  # IncorrectListsGet:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     Handler: src/handlers/getIncorrectLists.handler
+  #     Runtime: nodejs20.x
+  #     Events:
+  #       IncorrectListsGet:
+  #         Type: Api
+  #         Properties:
+  #           Path: /incorrectLists
+  #           Method: get
+  #           Cors:
+  #             AllowOrigins: "'*'"
+  #             AllowMethods: "'GET,OPTIONS'"
+  #             AllowHeaders: "'Content-Type'"
+
+  # IncorrectListPost:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     Handler: src/handlers/postIncorrectList.handler
+  #     Runtime: nodejs20.x
+  #     Events:
+  #       IncorrectListPost:
+  #         Type: Api
+  #         Properties:
+  #           Path: /incorrectList
+  #           Method: post
+  #           Cors:
+  #             AllowOrigins: "'*'"
+  #             AllowMethods: "'POST,OPTIONS'"
+  #             AllowHeaders: "'Content-Type'"
+
+  # IncorrectWordsPost:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     Handler: src/handlers/postIncorrectWords.handler
+  #     Runtime: nodejs20.x
+  #     Events:
+  #       IncorrectWordsPost:
+  #         Type: Api
+  #         Properties:
+  #           Path: /incorrectWords
+  #           Method: post
+  #           Cors:
+  #             AllowOrigins: "'*'"
+  #             AllowMethods: "'POST,OPTIONS'"
+  #             AllowHeaders: "'Content-Type'"
+
+  # IncorrectWordPost:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     Handler: src/handlers/postIncorrectWord.handler
+  #     Runtime: nodejs20.x
+  #     Events:
+  #       IncorrectWordPost:
+  #         Type: Api
+  #         Properties:
+  #           Path: /incorrectWord
+  #           Method: post
+  #           Cors:
+  #             AllowOrigins: "'*'"
+  #             AllowMethods: "'POST,OPTIONS'"
+  #             AllowHeaders: "'Content-Type'"
