@@ -1,9 +1,3 @@
-// const {
-//   checkCachedSecrets,
-//   getDb,
-//   auth: { getOauthMiddleWareResult },
-//   apiResource: { respond },
-// } = require("@nurdworker/rbm-helper");
 const {
   checkCachedSecrets,
   getDb,

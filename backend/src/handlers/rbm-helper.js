@@ -45,7 +45,8 @@ const getSecrets = async () => {
     let dbUri;
 
     if (env === "dev_sam") {
-      dbUri = `mongodb://${user}:${password}@host.docker.internal:${port}/${dbName}`;
+      // dbUri = `mongodb://${user}:${password}@host.docker.internal:${port}/${dbName}`;
+      dbUri = `mongodb://${user}:${password}@${host}:${port}/${dbName}`;
     } else if (env === "dev") {
       dbUri = `mongodb://${user}:${password}@${host}:${port}/${dbName}`;
     } else {
@@ -53,7 +54,6 @@ const getSecrets = async () => {
         "Required environment variables not set for dev or dev_sam"
       );
     }
-
     return {
       dbSecrets: { dbUri, dbName },
       oauthSecrets: { clientId, clientSecret, redirectUri },
@@ -118,7 +118,9 @@ const checkCachedSecrets = async (cachedSecrets) => {
       }
     }
   } catch (err) {
-    throw new Error("Failed to retrieve or cache secrets: " + err.message);
+    throw new Error(
+      "Failed to retrieve or cache secrets: " + process.env.ENV + err.message
+    );
   }
 };
 
@@ -412,6 +414,16 @@ const auth = {
     }
   },
   getOauthMiddleWareResult: async (event, email, cachedSecrets, cachedDb) => {
+    // Check if the user is banned
+    try {
+      const usersCollection = cachedDb.collection("users");
+      const user = await usersCollection.findOne({ email });
+      if (user?.is_banned) {
+        return createAuthResult("User is banned", null, 401);
+      }
+    } catch (error) {
+      return createAuthResult("Failed to check user status", null, 500);
+    }
     let refresh_token;
     let access_token;
 
